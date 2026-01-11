@@ -1,0 +1,44 @@
+[
+    {
+        "id": "1",
+        "name": "Dr. Sarah Johnson",
+        "specialty": "Cardiology",
+        "image": "/assets/images/doctors/doc1.png",
+        "bio": "Expert in cardiovascular health with over 15 years of experience treating complex heart conditions."
+    },
+    {
+        "id": "2",
+        "name": "Dr. Michael Chen",
+        "specialty": "Neurology",
+        "image": "/assets/images/doctors/doc2.png",
+        "bio": "Specializing in neurological disorders, Dr. Chen leads our stroke rehabilitation program."
+    },
+    {
+        "id": "3",
+        "name": "Dr. Emily Davis",
+        "specialty": "Pediatrics",
+        "image": "/assets/images/doctors/doc3.png",
+        "bio": "Compassionate pediatrician dedicated to the well-being and development of our youngest patients."
+    },
+    {
+        "id": "4",
+        "name": "Dr. James Wilson",
+        "specialty": "Orthopedics",
+        "image": "/assets/images/doctors/doc4.png",
+        "bio": "Orthopedic surgeon renowned for sports medicine and joint replacement surgeries."
+    },
+    {
+        "id": "5",
+        "name": "Dr. Maria Garcia",
+        "specialty": "Dermatology",
+        "image": "/assets/images/doctors/doc1.png",
+        "bio": "Providing advanced dermatological care, from routine skin checks to cosmetic procedures."
+    },
+    {
+        "id": "6",
+        "name": "Dr. Robert Taylor",
+        "specialty": "Oncology",
+        "image": "/assets/images/doctors/doc2.png",
+        "bio": "Leading oncologist committed to personalized cancer treatment plans and patient support."
+    }
+]

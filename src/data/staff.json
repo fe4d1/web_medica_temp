@@ -1,0 +1,27 @@
+[
+    {
+        "staff_id": "DOC-001",
+        "password": "admin",
+        "name": "Dr. Sarah Johnson",
+        "role": "Cardiologist",
+        "patients": [
+            {
+                "name": "Alice Smith",
+                "time": "09:00 AM",
+                "type": "Check-up"
+            },
+            {
+                "name": "Bob Jones",
+                "time": "10:30 AM",
+                "type": "Follow-up"
+            }
+        ]
+    },
+    {
+        "staff_id": "NURSE-022",
+        "password": "nurse",
+        "name": "James Miller",
+        "role": "Head Nurse",
+        "patients": []
+    }
+]

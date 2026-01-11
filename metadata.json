@@ -1,0 +1,8 @@
+
+{
+  "name": "Polyclinic Pakistan - Modern Healthcare",
+  "description": "A comprehensive digital healthcare ecosystem for Pakistan, facilitating specialist discovery, instant booking, and digital medical records management.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

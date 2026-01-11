@@ -1,0 +1,23 @@
+[
+    {
+        "mr_number": "123456",
+        "password": "demo",
+        "name": "John Doe",
+        "dob": "1985-05-15",
+        "blood_group": "O+",
+        "history": [
+            {
+                "date": "2025-12-10",
+                "type": "Checkup",
+                "doctor": "Dr. Sarah Johnson",
+                "notes": "Regular cardiac screening. BP Normal."
+            },
+            {
+                "date": "2025-11-05",
+                "type": "Lab",
+                "doctor": "Lab Dept",
+                "notes": "Blood test results: Vitamin D deficiency."
+            }
+        ]
+    }
+]
