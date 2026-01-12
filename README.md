@@ -72,18 +72,18 @@ The codebase follows a Domain-Driven structure within the Next.js App Router:
 
 ```
 src/
-├── app/                  # Next.js App Router (Páginas y Rutas)
-│   ├── admin/            # Gestión de noticias/artículos
-│   ├── patients/         # Portal del Paciente (Dashboard e Historial)
-│   ├── professionals/    # Portal del Personal Médico (Dashboard de Staff)
-│   ├── doctors/          # Listado público de especialistas
-│   ├── book/             # Sistema de reserva de citas
-│   ├── careers/          # Sección de reclutamiento
-│   ├── legal/            # Páginas de Términos y Privacidad
-│   └── globals.css       # Estilos globales y variables de diseño
-├── components/           # Componentes UI (Header, Footer, Demos JS)
-├── data/                 # Capa de Persistencia (Archivos JSON)
-└── lib/                  # Lógica de Datos (Capa de Acceso y Calculadoras)
+├── app/ # Next.js App Router (Pages and Routes)
+│ ├── admin/ # News/Article Management
+│ ├── patients/ # Patient Portal (Dashboard and History)
+│ ├── professionals/ # Medical Staff Portal (Staff Dashboard)
+│ ├── doctors/ # Public Listing of Specialists
+│ ├── book/ # Appointment Booking System
+│ ├── careers/ # Recruitment Section
+│ ├── legal/ # Terms and Privacy Pages
+│ └── globals.css # Global Styles and Design Variables
+├── components/ # Components UI (Header, Footer, JS Demos)
+├── data/ # Persistence Layer (JSON Files)
+└── lib/ # Data Logic (Access Layer and Calculators)
 ```
 
 ## Contributing
