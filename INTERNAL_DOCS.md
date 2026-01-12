@@ -1,74 +1,113 @@
-# VitalCare Medical Web - Internal Developer Documentation
+# Documentación Interna - VitalCare Medical Platform
 
-**Confidential - Internal Use Only**
-
-## 1. Project Overview & Architecture
-This project is a Next.js 15 application designed to simulate a real-world medical platform without the complexity of a real database server.
-
-### Key Architectural Decisions:
-- **No Database**: We use `fs/promises` to read/write to `src/data/*.json` files. This mimics a database latency and structure but keeps the repo self-contained.
-- **Server Actions**: All form submissions (Login, Book Appointment, Create News) use Next.js Server Actions. This ensures progressive enhancement and secure backend execution.
-- **CSS Variables**: Check `src/app/globals.css`. We defined a Semantic Color System (`--primary`, `--secondary`, `--accent`) to make theming changes instant across the app.
-
-## 2. Directory Structure Explained
-- **`src/app`**:
-    - `page.tsx`: The Homepage. Uses generic components and fetches generic news.
-    - `doctors/`: Lists doctors from `doctors.json`.
-    - `patients/`: Handles Patient Login & Dashboard.
-    - `professionals/`: Handles Staff Login & Dashboard. NOTE: This is separate from Patients for security simulation.
-    - `admin/`: Hidden path for News Creation.
-- **`src/data`**:
-    - **HOT**: These files are the "Live DB". If the app crashes on data, check these JSONs for syntax errors.
-    - `doctors.json`: Lists public profile info.
-    - `patients.json`: Contains sensitive patient records (hashed passwords would be here in real prod).
-    - `staff.json`: Staff credentials.
-- **`src/lib`**:
-    - `db.ts`, `db-patient.ts`, `db-staff.ts`: These act as our ORM/SDK to interact with the JSON files.
-
-## 3. Deployment & Production
-
-### Connecting to GitHub (Securely)
-Since we have removed all hardcoded real secrets (using only "demo" passwords), this repo is safe to push to a private or public repository.
-
-**Steps to Push:**
-1.  Initialize Git:
-    ```bash
-    git init
-    git add .
-    git commit -m "Initial commit of VitalCare Platform"
-    ```
-2.  Create a Repo on GitHub:
-    - Go to GitHub -> New Repository.
-    - Name it `vitalcare-medical` (or similar).
-    - **Do NOT** check "Initialize with README" (we made one).
-3.  Link and Push:
-    ```bash
-    git remote add origin https://github.com/YOUR_USERNAME/REPO_NAME.git
-    git branch -M main
-    git push -u origin main
-    ```
-
-### Environment Variables
-Currently, the app **does not** rely on `.env` files for logic, as it's a prototype using local JSONs.
-If you deploy to **Vercel**, the `fs` (FileSystem) API might be read-only (Lambda environment).
-*Recommendation*: For a Vercel deployment, you would need to migrate the generic JSON logic to a cloud database (like Postgres or MongoDB) or use Vercel Blob Storage. The current setup is perfect for a **VPS**, **Docker**, or **Local Demo**.
-
-## 4. Known "Secrets" & Test Data
-- **News Admin Key**: Defined in `src/app/admin/news/create/page.tsx` as `admin123`. Change this code if you go to production.
-- **Demo Users**:
-    - Patient: `123456` / `demo`
-    - Doctor: `DOC-001` / `admin`
-
-## 5. Maintenance
-- **Adding Images**: Put them in `/public/assets/images`.
-- **Changing Colors**: Edit `:root` in `src/app/globals.css`.
-- **New Pages**: Create a folder in `src/app/` with a `page.tsx`.
-
-## 6. API / Integrations
-Currently, no external APIs are called. The site is fully self-contained.
-To add Email Sending (for the Booking form), look at `src/app/book/page.tsx` and integrate a service like **Resend** or **SendGrid** inside the Server Action.
+**ESTE DOCUMENTO ES PRIVADO (SOLO PARA DESARROLLO)**
+*Esta documentación contiene los detalles técnicos profundos, la arquitectura del sistema y la justificación de cada decisión tecnológica tomada. No debe ser pública.*
 
 ---
 
+## 1. Visión General y Arquitectura
+
+### ¿Qué es este proyecto?
+Es una plataforma web médica de "Agencia" (VitalCare), diseñada para gestionar la interacción entre Pacientes, Doctores y Profesionales. 
+El objetivo no es solo informar, sino ser una herramienta funcional (citas, dashboard, noticias).
+
+### Estructura de Directorios (Organization)
+El proyecto sigue una estructura **"Domain Driven"** (orientada al dominio) dentro del App Router de Next.js.
+
+- **`/src/app`**: El corazón del enrutado.
+  - **Why?**: A diferencia del antiguo `pages/` directory, App Router permite **Layouts anidados**. Por ejemplo, `/dashboard` puede tener su propio layout diferente al aterrizaje principal sin re-renderizar todo.
+  - **`admin/`, `doctors/`, `patients/`**: Separación clara de portales. Cada uno actúa como una "mini-app".
+  - **`legal/`**: Separado para no mezclar lógica de negocio con páginas estáticas.
+
+- **`/src/components`**: Componentes UI reutilizables.
+  - Se mantiene "agnóstico" a los datos. Un `<Button>` aquí no sabe qué es un "Paciente", solo sabe renderizarse.
+
+- **`/src/lib` (`db*.ts`)**: Capa de Acceso a Datos (DAL).
+  - **Why?**: Nunca accedemos a los archivos JSON directamente desde los componentes. Usamos funciones `getAllDoctors()`, `getPatientById()`.
+  - **Futuro**: Cuando migremos a una Base de Datos real (PostgreSQL), solo cambiaremos los archivos en `/lib`. El resto de la app NO se enterará. Esta es la **Inversión de Dependencias**.
+
+- **`/src/data`**: Base de datos Mock (JSON).
+  - **Why?**: Rapidez. Configurar Postgres dockerizado toma tiempo. JSON nos permite iterar la UI hoy.
+
 ---
-*Generated by Antigravity - January 2026*
+
+## 2. Tecnologías y "EL PORQUÉ" (Justificación)
+
+### Framework: Next.js 15 (App Router)
+**Elección**: Framework Full Stack React.
+**Competencia**: 
+- *React con Vite (SPA)*: Vite es rápido, pero es "Client Side Rendering". Para una web médica, el **SEO** es vital (Google debe indexar "Cardiólogo en Ciudad X"). Vite falla ahí sin configuración compleja. Next.js lo hace nativo.
+- *Remix*: Muy bueno, similar a Next.js, pero el ecosistema de Next es más grande y maduro hoy en día para integrar soluciones enterprise.
+
+**Razón Clave**:
+Server Components. Podemos renderizar la lista de doctores en el servidor (rápido, seguro) y enviar solo HTML al cliente. Menos JavaScript al navegador = Carga más rápida.
+
+### Lenguaje: TypeScript
+**Elección**: Tipado estático.
+**Competencia**: 
+- *JavaScript*: Más rápido de escribir al inicio, pero un infierno de mantener.
+**Razón Clave**:
+En medicina, la precisión es clave. No podemos confundir `patient.id` (string) con `patient_id` (undefined). TypeScript nos grita antes de compilar si cometemos ese error. Es un "seguro de vida" para el código.
+
+### Estilado: Vanilla CSS (Variables + CSS Modules)
+**Elección**: CSS estándar moderno.
+**Competencia**:
+- *Tailwind CSS*: Muy popular. **¿Por qué NO lo usamos aquí (principalmente)?**
+  - Queríamos control total y semántica limpia. Tailwind llena el HTML de clases (`w-full h-10 bg-red-500...`).
+  - Al usar CSS Variables (`--primary: #00d664`), podemos cambiar el color de TODA la marca en 1 segundo editando un solo archivo (`globals.css`).
+  - El diseño "Premium" a veces requiere ajustes de píxeles finos (`box-shadow`, `backdrop-filter`) que a veces se pelean con las utilidades rígidas de Tailwind.
+- *SASS/SCSS*: Ya no es necesario. CSS moderno ya tiene variables y anidación (nesting).
+
+### Base de Datos: JSON (Sistema de Archivos)
+**Elección**: Persistencia local.
+**Competencia**:
+- *PostgreSQL / MySQL*: Requiere infraestructura.
+- *MongoDB*: Flexible, pero overkill para empezar.
+**Razón Clave**: 
+**Zero-Setup**. Permite prototipar la UX inmediatamente. La arquitectura en `/lib` asegura que el cambio a SQL será transparente.
+
+---
+
+## 3. Relación con Estándares Web (HTML/CSS/JS)
+
+Aunque veas extensiones como `.tsx` o `.ts`, este proyecto **ESTÁ** construido sobre los pilares fundamentales de la web.
+
+1.  **HTML (Estructura) → JSX/TSX**
+    *   En lugar de escribir `index.html` estáticos, escribimos **JSX** (dentro de archivos `.tsx`).
+    *   **¿Qué es?**: Es HTML "vitaminado" que vive dentro de JavaScript.
+    *   **Al final**: El compilador lo transforma en **HTML puro** que el navegador renderiza (DOM).
+
+2.  **CSS (Diseño) → Vanilla CSS**
+    *   Usamos **CSS estándar** (`globals.css` y CSS Modules).
+    *   No hay "magia" aquí. Son reglas CSS3 modernas (Variables, Flexbox, Grid) que funcionan nativamente en el navegador.
+
+3.  **JavaScript (Lógica) → TypeScript**
+    *   **TypeScript** es simplemente JavaScript con seguridad.
+    *   El navegador no entiende TypeScript, por lo que en el proceso de "Build", todo se **traduce a JavaScript estándar** optimizado.
+
+---
+
+## 4. Decisiones de Diseño "Premium"
+
+El usuario pidió una estética que haga decir "WOW".
+
+1.  **Glassmorphism**: Uso de `backdrop-filter: blur(10px)` en el Header y Cards. Da una sensación de profundidad y modernidad (estilo iOS/MacOS).
+2.  **Color Palette**:
+    - **Verde Médico (#00d664)**: Transmite esperanza, salud, pero es vibrante (tech), no aburrido.
+    - **Tipografía Inter**: Fuente de Google altamente legible y neutral.
+3.  **Animaciones**: (Pendiente de ampliar) Se busca que los botones tengan transiciones suaves (`transition: all 0.2s`) para que la app se sienta "viva".
+
+---
+
+## 4. Notas para el Futuro (Roadmap Personal)
+
+1.  **Migrar a Base de Datos Real**:
+    - Usar *Prisma ORM* con *PostgreSQL* (probablemente Supabase o Neon Tech).
+    - Reemplazar `/src/lib/db-*.ts` por llamadas a Prisma.
+2.  **Autenticación**:
+    - Implementar *NextAuth.js* (o Auth.js) para manejar sesiones reales de doctores y pacientes.
+3.  **Testing**:
+    - Añadir *Playwright* para pruebas end-to-end críticas (ej: reservar cita).
+
+---
+**Recuerda**: Este archivo debe estar en `.gitignore`.
