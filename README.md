@@ -46,12 +46,12 @@ Follow these steps to set up the project locally.
 
 2. **Install dependencies**
    ```bash
-   npm install
+   npm install (or pnpm install)
    ```
 
 3. **Start the development server**
    ```bash
-   npm run dev
+   npm run dev (or pnpm run dev)
    ```
 
 4. **Access the application**
