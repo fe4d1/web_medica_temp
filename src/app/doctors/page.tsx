@@ -1,15 +1,29 @@
-
 import Link from 'next/link';
 import { getDoctors } from '@/lib/db';
+import { InvoiceCalculator } from '@/lib/invoice-calculator';
+import SearchDemo from '@/components/SearchDemo';
 
 export default async function DoctorsPage() {
     const doctors = await getDoctors();
+
+    // Demo: Class Usage
+    const calculator = new InvoiceCalculator(50);
+    const demoTotal = calculator.calculateTotal([{ price: 150 }]);
+    const formattedTotal = InvoiceCalculator.formatCurrency(demoTotal);
 
     return (
         <main className="container section" style={{ paddingTop: '3rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
                 <h1 className="hero-title" style={{ color: 'var(--text-main)', fontSize: '2.5rem' }}>Our Medical Panel</h1>
                 <p style={{ color: 'var(--text-muted)' }}>Meet our top-tier verified specialists.</p>
+
+                {/* Demo: DOM & Class Features */}
+                <div style={{ maxWidth: '400px', margin: '2rem auto' }}>
+                    <SearchDemo />
+                    <p style={{ fontSize: '0.8rem', color: '#888', fontStyle: 'italic' }}>
+                        *Global Avg. Consultation: {formattedTotal}
+                    </p>
+                </div>
             </div>
 
             <div className="doctors-grid">
